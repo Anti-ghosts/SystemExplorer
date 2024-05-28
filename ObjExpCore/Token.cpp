@@ -99,7 +99,7 @@ TOKEN_STATISTICS Token::GetStats() const {
 	return stats;
 }
 
-std::vector<TokenGroup> WinSys::Token::EnumGroups(bool caps) const {
+std::vector<TokenGroup> Token::EnumGroups(bool caps) const {
 	std::vector<TokenGroup> groups;
 	BYTE buffer[1 << 13];
 	DWORD len;

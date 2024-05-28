@@ -42,7 +42,7 @@ namespace WinSys {
 
 	struct ServiceConfiguration {
 		ServiceType Type;
-		ServiceStartType  StartType;
+		ServiceStartType StartType;
 		ServiceErrorControl ErrorControl;
 		std::wstring BinaryPathName;
 		std::wstring LoadOrderGroup;

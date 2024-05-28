@@ -8,7 +8,7 @@ struct SortHelper final abstract {
 	static bool SortBoolean(bool a, bool b, bool asc);
 
 	template<typename Number>
-	static bool SortNumbers(const Number& n1, const Number& n2, bool ascending) {
+	static bool SortNumbers(const Number n1, const Number n2, bool ascending) {
 		return ascending ? n2 > n1 : n2 < n1;
 	}
 };

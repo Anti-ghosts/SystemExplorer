@@ -81,7 +81,7 @@ NTSTATUS ObjExpCreateClose(PDEVICE_OBJECT, PIRP Irp) {
 			auto path = (UNICODE_STRING*)buffer;
 			auto bs = wcsrchr(path->Buffer, L'\\');
 			NT_ASSERT(bs);
-			if (bs == nullptr || (0 != _wcsicmp(bs, L"\\SysExp.exe") && 0 != _wcsicmp(bs, L"\\ObjExp.exe")))
+			if (bs == nullptr || (0 != _wcsicmp(bs, L"\\SysExp.exe") && 0 != _wcsicmp(bs, L"\\ObjExp.exe") && 0 != _wcsicmp(bs, L"\\TotalSys.exe")))
 				status = STATUS_ACCESS_DENIED;
 		}
 	}
@@ -210,6 +210,7 @@ NTSTATUS ObjExpDeviceControl(PDEVICE_OBJECT, PIRP Irp) {
 
 		case IOCTL_KOBJEXP_OPEN_PROCESS:
 		case IOCTL_KOBJEXP_OPEN_THREAD:
+		case IOCTL_KOBJEXP_OPEN_PROCESS_TOKEN:
 		{
 			if (Irp->AssociatedIrp.SystemBuffer == nullptr) {
 				status = STATUS_INVALID_PARAMETER;
@@ -222,15 +223,27 @@ NTSTATUS ObjExpDeviceControl(PDEVICE_OBJECT, PIRP Irp) {
 			auto data = (OpenProcessThreadData*)Irp->AssociatedIrp.SystemBuffer;
 			OBJECT_ATTRIBUTES attr = RTL_CONSTANT_OBJECT_ATTRIBUTES(nullptr, 0);
 			CLIENT_ID id{};
-			if (dic.IoControlCode == IOCTL_KOBJEXP_OPEN_PROCESS) {
+			HANDLE hObject{ nullptr };
+			if (dic.IoControlCode == IOCTL_KOBJEXP_OPEN_PROCESS || dic.IoControlCode == IOCTL_KOBJEXP_OPEN_PROCESS_TOKEN) {
 				id.UniqueProcess = UlongToHandle(data->Id);
-				status = ZwOpenProcess((HANDLE*)data, data->AccessMask, &attr, &id);
+				const ACCESS_MASK PROCESS_QUERY_INFORMATION = 0x400;
+				status = ZwOpenProcess(&hObject, 
+					dic.IoControlCode == IOCTL_KOBJEXP_OPEN_PROCESS_TOKEN ? PROCESS_QUERY_INFORMATION : data->AccessMask, &attr, &id);
 			}
 			else {
 				id.UniqueThread = UlongToHandle(data->Id);
-				status = ZwOpenThread((HANDLE*)data, data->AccessMask, &attr, &id);
+				status = ZwOpenThread(&hObject, data->AccessMask, &attr, &id);
+			}
+			if (dic.IoControlCode == IOCTL_KOBJEXP_OPEN_PROCESS_TOKEN) {
+				auto hProcess = hObject;
+				if (hProcess) {
+					status = ZwOpenProcessTokenEx(hProcess, data->AccessMask, 0, &hObject);
+					ZwClose(hProcess);
+				}
 			}
 			len = NT_SUCCESS(status) ? sizeof(HANDLE) : 0;
+			if (len)
+				memcpy(data, &hObject, sizeof(HANDLE));
 			break;
 		}
 

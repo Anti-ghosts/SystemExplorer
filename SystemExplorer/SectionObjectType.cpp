@@ -18,7 +18,7 @@ CString SectionObjectType::GetDetails(HANDLE hSection) {
 
 CString SectionObjectType::SectionAttributesToString(DWORD value) {
 	CString text;
-	struct {
+	static const struct {
 		DWORD attribute;
 		PCWSTR text;
 	} attributes[] = {

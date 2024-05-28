@@ -804,8 +804,8 @@
     <None Include="Bin\x64\KObjExp.sys">
       <Filter>Bin\x64</Filter>
     </None>
-    <None Include="..\x64\Release\KObjExp.sys" />
     <None Include="packages.config" />
+    <None Include="..\x64\ReleaseSigned\KObjExp.sys" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="manifest.xml" />

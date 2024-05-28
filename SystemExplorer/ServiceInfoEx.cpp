@@ -10,12 +10,15 @@ ServiceInfoEx::ServiceInfoEx(PCWSTR name) : _name(name) {
 const WinSys::ServiceConfiguration* ServiceInfoEx::GetConfiguration() const {
 	if (_config == nullptr)
 		_config = ServiceManager::GetServiceConfiguration(_name);
+	//_config = std::make_unique<WinSys::ServiceConfiguration>();
+	if (_config == nullptr)
+		DebugBreak();
 	return _config.get();
 }
 
 const CString& ServiceInfoEx::GetDescription() const {
 	if (_desc.IsEmpty()) {
-		_desc = WinSys::ServiceManager::GetServiceDescription(_name).c_str();
+		_desc = ServiceManager::GetServiceDescription(_name).c_str();
 	}
 	return _desc;
 }

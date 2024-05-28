@@ -34,7 +34,7 @@ std::vector<ServiceInfo> ServiceManager::EnumServices(ServiceEnumType enumType, 
 	return services;
 }
 
-std::unique_ptr<ServiceConfiguration> ServiceManager::GetServiceConfiguration(const std::wstring & serviceName) {
+std::unique_ptr<ServiceConfiguration> ServiceManager::GetServiceConfiguration(const std::wstring& serviceName) {
 	auto hService(OpenServiceHandle(serviceName));
 	if (!hService)
 		return nullptr;
@@ -44,12 +44,13 @@ std::unique_ptr<ServiceConfiguration> ServiceManager::GetServiceConfiguration(co
 	if(needed == 0)
 		return nullptr;
 
+	auto result = std::make_unique<ServiceConfiguration>();
+
 	auto buffer = std::make_unique<BYTE[]>(needed);
 	auto config = reinterpret_cast<QUERY_SERVICE_CONFIG*>(buffer.get());
 	if (!::QueryServiceConfig(hService.get(), config, needed, &needed))
-		return nullptr;
+		return result;
 
-	auto result = std::make_unique<ServiceConfiguration>();
 	result->AccountName = config->lpServiceStartName;
 	result->DisplayName = config->lpDisplayName;
 	DWORD len;
@@ -120,7 +121,7 @@ std::wstring WinSys::ServiceManager::GetServiceDescription(const std::wstring & 
 	return desc->lpDescription;
 }
 
-wil::unique_schandle ServiceManager::OpenServiceHandle(const std::wstring & name, ServiceAccessMask access) {
+wil::unique_schandle ServiceManager::OpenServiceHandle(const std::wstring& name, ServiceAccessMask access) {
 	wil::unique_schandle hScm(::OpenSCManager(nullptr, nullptr, SC_MANAGER_ALL_ACCESS));
 	if (!hScm)
 		return nullptr;

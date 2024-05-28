@@ -380,7 +380,13 @@ LRESULT CMainFrame::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/
 				}
 			}
 			else {
-				if (!DriverHelper::InstallDriver() || !DriverHelper::LoadDriver()) {
+				auto loaded = DriverHelper::LoadDriver();
+				if (!loaded) {
+					loaded = DriverHelper::InstallDriver();
+					if (loaded)
+						loaded = DriverHelper::LoadDriver();
+				}
+				if(!loaded) {
 					AtlMessageBox(m_hWnd, L"Failed to install driver. Some functionality will not be available.", IDS_TITLE, MB_ICONERROR);
 				}
 			}

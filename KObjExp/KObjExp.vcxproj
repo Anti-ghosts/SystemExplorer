@@ -202,6 +202,7 @@
     </DriverSign>
     <Link>
       <AdditionalDependencies>wdmsec.lib;win32k.lib;%(AdditionalDependencies);$(KernelBufferOverflowLib);$(DDK_LIB_PATH)ntoskrnl.lib;$(DDK_LIB_PATH)hal.lib;$(DDK_LIB_PATH)wmilib.lib</AdditionalDependencies>
+      <AdditionalOptions>/integritycheck %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <ClCompile>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -213,6 +214,7 @@
     </DriverSign>
     <Link>
       <AdditionalDependencies>wdmsec.lib;win32k.lib;%(AdditionalDependencies);$(KernelBufferOverflowLib);$(DDK_LIB_PATH)ntoskrnl.lib;$(DDK_LIB_PATH)hal.lib;$(DDK_LIB_PATH)wmilib.lib</AdditionalDependencies>
+      <AdditionalOptions>/integritycheck %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <ClCompile>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -227,6 +229,7 @@
     </DriverSign>
     <Link>
       <AdditionalDependencies>wdmsec.lib;win32k.lib;%(AdditionalDependencies);$(KernelBufferOverflowLib);$(DDK_LIB_PATH)ntoskrnl.lib;$(DDK_LIB_PATH)hal.lib;$(DDK_LIB_PATH)wmilib.lib</AdditionalDependencies>
+      <AdditionalOptions>/integritycheck %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <ClCompile>
       <LanguageStandard>stdcpp20</LanguageStandard>
